@@ -559,7 +559,10 @@ table.metric-table td.numeric, table.metric-table th.numeric { text-align: right
   position: fixed;
   inset: 0;
   display: none;
-  z-index: 1000;
+  /* Above .dash-header (z-index 1100) — without this, the dashboard's
+     sticky top bar floats over the modal-header and hides the close X.
+     Leaflet's map controls (default ~1000) are covered by the backdrop. */
+  z-index: 1200;
   align-items: center;
   justify-content: center;
 }
@@ -1377,7 +1380,9 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  z-index: 1100;            /* above modal backdrop (1000) */
+  z-index: 1300;            /* above .dash-header (1100) and .modal (1200);
+                               the body:has(.modal.open) rule below hides
+                               this anyway whenever a modal is open. */
   display: flex;
   align-items: center;
   justify-content: center;
