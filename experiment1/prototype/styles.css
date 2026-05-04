@@ -1429,6 +1429,15 @@ body:has(.modal.open) .about-btn { display: none; }
   font-size: 14.5px;
 }
 .about-body p { margin: 0; }
+.about-body p + p { margin-top: 12px; }
+.about-body h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+  font-weight: 600;
+  margin: 20px 0 8px;
+}
 .about-body code {
   background: var(--bg-2);
   padding: 1px 6px;
