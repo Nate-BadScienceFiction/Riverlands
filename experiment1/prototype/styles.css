@@ -1369,7 +1369,10 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 
 .about-btn {
   position: fixed;
-  top: 14px;
+  /* Bottom-right keeps the button clear of every screen's top action
+     bar (dash-header has FAQ / Postcard / Game it; picker has the
+     hero title; modals have their own close X). */
+  bottom: 14px;
   right: 14px;
   width: 32px;
   height: 32px;
