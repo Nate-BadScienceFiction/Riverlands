@@ -1386,6 +1386,11 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   transition: background .12s ease, color .12s ease;
 }
 .about-btn:hover { background: var(--surface-2); color: var(--text); }
+/* Hide the about button while any modal is open — without this it sits
+   on top of the modal's close X (same top-right corner, higher z-index)
+   and blocks the only obvious way out of the Re-Run / FAQ / Saved-runs
+   panels. Esc and backdrop-click still work either way. */
+body:has(.modal.open) .about-btn { display: none; }
 
 .version-badge {
   display: inline-block;
