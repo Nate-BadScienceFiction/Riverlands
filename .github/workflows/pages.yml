@@ -1,0 +1,45 @@
+# Deploy the prototype as a static site to GitHub Pages.
+# After first push, enable Pages in the repository settings:
+#   Settings → Pages → Build and deployment → Source: GitHub Actions
+# The published URL will be:
+#   https://nate-badsciencefiction.github.io/Riverlands/
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping queued runs in between
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload prototype as Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Only the prototype directory becomes the site.
+          path: experiment1/prototype
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

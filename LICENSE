@@ -1,0 +1,37 @@
+MIT License
+
+Copyright (c) 2026 Nate Combs and Claude Code
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+----
+
+Third-party assets bundled with this project:
+
+* Leaflet (vendor/leaflet/)            BSD-2-Clause   © Vladimir Agafonkin
+* Chart.js (vendor/chartjs/chart.umd.js)  MIT          © Chart.js Contributors
+* chartjs-plugin-annotation              MIT          © chartjs-plugin-annotation contributors
+* SunCalc (vendor/suncalc.js)            BSD-2-Clause © Vladimir Agafonkin
+* Map tiles (vendor/tiles/)              CC BY 4.0    © OpenStreetMap contributors and © CARTO
+                                                       https://carto.com/attributions
+
+The Riverlands.gpx file records the GPS route of a public trail at
+Androscoggin Riverlands State Park, Turner, Maine. It is included as a
+test fixture and is not copyrighted as a data set; the underlying trail is
+public infrastructure.

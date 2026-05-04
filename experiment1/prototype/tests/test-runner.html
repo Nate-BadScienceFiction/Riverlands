@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Riverlands Tribute — Tests</title>
+  <style>
+    body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;
+           background: #14171c; color: #ecedef; padding: 32px; max-width: 920px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .sub { color: #7e8492; margin-bottom: 24px; }
+    .summary { padding: 16px 20px; border-radius: 8px; margin-bottom: 18px;
+               font-weight: 600; font-size: 16px; }
+    .summary.pass { background: rgba(34,197,94,.12); border-left: 4px solid #22c55e; color: #6fdf94; }
+    .summary.fail { background: rgba(239,68,68,.12); border-left: 4px solid #ef4444; color: #ef8585; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th { text-align: left; padding: 8px 12px; color: #7e8492;
+         text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.06em;
+         border-bottom: 1px solid #3a404b; }
+    td { padding: 8px 12px; border-bottom: 1px solid #2a2f38; font-size: 13px; }
+    .pass-row td:first-child::before { content: '✓ '; color: #22c55e; }
+    .fail-row td:first-child::before { content: '✕ '; color: #ef4444; }
+    .fail-row { background: rgba(239,68,68,.05); }
+    code { background: #242831; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Riverlands Tribute — derivation tests</h1>
+  <p class="sub">Acceptance gate. Asserts against the verified numbers from <code>analysis_possibilities.md</code>.</p>
+  <div id="summary" class="summary">running…</div>
+  <table id="table">
+    <thead>
+      <tr><th>Test</th><th>Actual</th><th>Expected</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script src="../vendor/suncalc.js"></script>
+  <script type="module">
+    import { runTests } from './derivations.test.js';
+    try {
+      const { pass, fail, results, dt } = await runTests();
+      const sum = document.getElementById('summary');
+      sum.classList.add(fail === 0 ? 'pass' : 'fail');
+      sum.textContent = `${pass} passed · ${fail} failed · ${dt} ms`;
+      const tbody = document.querySelector('#table tbody');
+      for (const r of results) {
+        const tr = document.createElement('tr');
+        tr.className = r.ok ? 'pass-row' : 'fail-row';
+        const fmt = v => (typeof v === 'number') ? v.toFixed(3).replace(/\.?0+$/, '') : String(v);
+        tr.innerHTML = `<td>${r.name}</td><td><code>${fmt(r.actual)}</code></td><td>${r.expected}</td>`;
+        tbody.appendChild(tr);
+      }
+    } catch (e) {
+      const sum = document.getElementById('summary');
+      sum.classList.add('fail');
+      sum.textContent = 'Test runner error: ' + e.message;
+      console.error(e);
+    }
+  </script>
+</body>
+</html>

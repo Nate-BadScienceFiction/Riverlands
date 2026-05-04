@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riverlands Tribute</title>
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- file:// detection. Inline non-module script so it runs even when ES
+     module imports are blocked by CORS. Without this, opening index.html
+     by double-click silently fails: the static page renders but no JS
+     interactions work (race cards missing, drag-drop falls through to
+     the browser's default "open file in tab" behavior). -->
+<script>
+(function () {
+  if (location.protocol !== 'file:') return;
+  document.addEventListener('DOMContentLoaded', function () {
+    var banner = document.createElement('div');
+    banner.className = 'file-banner';
+    banner.innerHTML =
+      '<strong>This page is opened over <code>file://</code>. Most of the app will not work.</strong> ' +
+      'ES module imports and the bundled GPX are blocked by browser CORS rules. ' +
+      'Drag-drop falls through to the browser\'s default "open file in tab" behavior, ' +
+      'which is what you saw. ' +
+      'Fix: serve over HTTP. From the <code>experiment1/prototype</code> folder run ' +
+      '<code>python -m http.server 8765</code> and open ' +
+      '<code>http://localhost:8765/</code>.';
+    document.body.insertBefore(banner, document.body.firstChild);
+  });
+})();
+</script>
+
+
+<!-- ============ SCREEN 1: File Picker ============ -->
+<section id="screen-picker" class="screen active">
+  <header class="hero">
+    <h1>Riverlands Tribute</h1>
+    <p class="tagline">Trail-running races as data, analysis, and small games.</p>
+  </header>
+
+  <main class="picker">
+    <h2 class="section-label">Available races</h2>
+    <div class="card-grid" id="card-grid">
+      <!-- Cards rendered by app.js -->
+    </div>
+
+    <div class="dropzone is-disabled" id="dropzone" aria-disabled="true" tabindex="-1">
+      <p class="dropzone-title">Drag-and-drop is disabled in this build</p>
+      <p class="dropzone-sub">Use the Riverlands race card above, or download the bundled GPX:
+        <a href="data/Riverlands.gpx" download>Riverlands.gpx</a>.
+      </p>
+    </div>
+    <input type="file" id="file-input" accept=".gpx,application/gpx+xml,application/xml" style="display:none">
+
+  </main>
+</section>
+
+<!-- ============ SCREEN 2: Analysis Dashboard ============ -->
+<section id="screen-dashboard" class="screen">
+  <header class="dash-header">
+    <button class="btn-icon back-btn" id="back-to-picker" aria-label="Back to file picker">←</button>
+    <div class="dash-title">
+      <h2 id="dash-title">Riverlands</h2>
+      <p class="dash-sub" id="dash-sub">—</p>
+    </div>
+    <div class="dash-actions">
+      <button class="btn" id="faq-btn">FAQ</button>
+      <button class="btn is-disabled" id="postcard-btn" disabled title="Postcard authoring is on hold for this build — try the FAQ for rolled-up answers.">Postcard</button>
+      <button class="btn btn-accent" id="game-it-btn">Game it →</button>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <!-- Summary band, always full width -->
+    <section class="summary-band" id="summary-band"></section>
+
+    <!-- Two-column grid on wide viewports; falls back to single column on narrow ones -->
+    <div class="dash-grid">
+
+      <!-- Left column: map (sticky on wide screens) -->
+      <div class="dash-left">
+        <section class="card map-card">
+          <div class="card-header">
+            <h3>Trace</h3>
+            <div class="legend" id="map-legend"></div>
+          </div>
+          <div id="map" class="map-canvas"></div>
+        </section>
+      </div>
+
+      <!-- Right column: timeline + drill-down tabs -->
+      <div class="dash-right">
+        <section class="card chart-card">
+          <div class="card-header">
+            <h3>Elevation &amp; pace by distance</h3>
+            <p class="card-sub">Twilight phases shaded. Hover to scrub.</p>
+          </div>
+          <div class="chart-host"><canvas id="timeline-chart"></canvas></div>
+        </section>
+
+        <section class="drilldowns card" id="drilldowns">
+          <div class="drill-tabs" role="tablist">
+            <button class="drill-tab active" data-tab="loop-comparison"   role="tab">Loops</button>
+            <button class="drill-tab"        data-tab="pace-by-grade"     role="tab">Pace by grade</button>
+            <button class="drill-tab"        data-tab="stop-classification" role="tab">Stops</button>
+            <button class="drill-tab"        data-tab="daylight-overlay"  role="tab">Daylight</button>
+            <button class="drill-tab"        data-tab="elevation-profile" role="tab">Elevation</button>
+          </div>
+          <div class="drill-panel-host">
+            <div class="drill-panel active" id="loop-comparison"   role="tabpanel"></div>
+            <div class="drill-panel"        id="pace-by-grade"     role="tabpanel"></div>
+            <div class="drill-panel"        id="stop-classification" role="tabpanel"></div>
+            <div class="drill-panel"        id="daylight-overlay"  role="tabpanel"></div>
+            <div class="drill-panel"        id="elevation-profile" role="tabpanel"></div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</section>
+
+<!-- ============ SCREEN 3: Postcard ============ -->
+<section id="screen-postcard" class="screen">
+  <header class="dash-header">
+    <button class="btn-icon back-btn" id="back-from-postcard" aria-label="Back to dashboard">←</button>
+    <div class="dash-title">
+      <h2>Postcard <span id="postcard-progress" class="postcard-progress">— of —</span></h2>
+      <p class="dash-sub" id="postcard-sub">—</p>
+    </div>
+    <div class="dash-actions">
+      <button class="btn" id="postcard-mode-toggle" title="Switch between focus mode (one card at a time) and booklet view (all cards stacked)">Focus mode</button>
+      <button class="btn" id="postcard-print">Print</button>
+    </div>
+  </header>
+
+  <main class="postcard-main" id="postcard-main">
+    <p class="postcard-premise">
+      Twelve places where the race changed. The app found them.
+      You name what happened. Short answers are fine. Empty is fine.
+      Memory tokens are optional — pick up to two per card.
+    </p>
+
+    <!-- Progress strip: a dot per inflection. Filled when the card has
+         an answer or any tokens. Click a dot to jump to that card
+         (focus mode) or scroll to it (booklet view). -->
+    <div class="postcard-progress-strip" id="postcard-progress-strip" aria-label="Card progress"></div>
+
+    <div id="postcard-cards"></div>
+
+    <!-- Visible only in focus mode. -->
+    <nav class="postcard-nav" id="postcard-nav" aria-label="Card navigation">
+      <button class="btn" id="postcard-prev">← Prev</button>
+      <span class="postcard-nav-label" id="postcard-nav-label">Card 1 of 12</span>
+      <button class="btn" id="postcard-next">Next →</button>
+    </nav>
+  </main>
+</section>
+
+<!-- ============ SCREEN 4: FAQ ============ -->
+<section id="screen-faq" class="screen">
+  <header class="dash-header">
+    <button class="btn-icon back-btn" id="back-from-faq" aria-label="Back to dashboard">←</button>
+    <div class="dash-title">
+      <h2>Race FAQ</h2>
+      <p class="dash-sub" id="faq-sub">—</p>
+    </div>
+  </header>
+
+  <main class="faq-main">
+    <p class="faq-premise">
+      Rollup questions about your race. Click one to see the answer with its
+      assumption and confound spelled out. Some take a parameter you can tune.
+    </p>
+    <div class="faq-grid">
+      <aside class="faq-list" id="faq-list" role="navigation" aria-label="FAQ questions"></aside>
+      <article class="faq-detail" id="faq-detail" role="main" aria-live="polite"></article>
+    </div>
+  </main>
+</section>
+
+<!-- ============ SCREEN 5: Re-Run modal ============ -->
+<div id="rerun-modal" class="modal" aria-hidden="true">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-panel" role="dialog" aria-labelledby="rerun-title">
+    <header class="modal-header">
+      <h2 id="rerun-title">Re-Run <span class="conf-badge conf-Exp" title="Speculative — cost-on-arithmetic, not physiology. Not training advice.">Speculative</span></h2>
+      <button class="btn-icon" data-close-modal aria-label="Close">✕</button>
+    </header>
+
+    <p class="modal-premise">
+      The race already happened. Move the sliders to explore alternate timelines.
+      Every change has a cost.
+    </p>
+
+    <details class="rerun-explainer" open>
+      <summary>How this works</summary>
+      <div class="explainer-body">
+        <ul class="trade-list">
+          <li><span class="trade-arrow down">↓</span> <b>Less stops</b> &mdash; saves clock time, costs <em>Stomach</em> (you ate less) and <em>Morale</em> (you suffered more)</li>
+          <li><span class="trade-arrow up">↑</span> <b>More stops</b> &mdash; adds clock time, <em>no cost</em> (more rest)</li>
+          <li><span class="trade-arrow up">↑</span> <b>Higher effort</b> &mdash; saves clock time, costs <em>Legs</em> (eccentric load) and <em>Fuel</em> (metabolic depletion)</li>
+          <li><span class="trade-arrow down">↓</span> <b>Lower effort</b> &mdash; adds clock time, <em>no cost</em> (easier pace)</li>
+        </ul>
+        <p class="explainer-foot">Costs are <b>banded</b>: small adjustments are cheap, big ones are cliff-expensive. Any pool reaching 0 = DNF. <i>Speculative replay &mdash; cost-on-arithmetic, not physiology, not training advice.</i></p>
+      </div>
+    </details>
+
+    <section class="rerun-results">
+      <div class="result-block">
+        <p class="result-label">Actual</p>
+        <p class="result-finish" id="actual-finish">—</p>
+        <p class="result-detail" id="actual-detail">—</p>
+      </div>
+      <div class="result-block result-block-cf">
+        <p class="result-label">Counterfactual</p>
+        <p class="result-finish" id="cf-finish">—</p>
+        <p class="result-detail" id="cf-detail">—</p>
+      </div>
+    </section>
+
+    <section class="pools" id="pools"></section>
+
+    <section class="loop-controls" id="loop-controls"></section>
+
+    <section class="warnings" id="rerun-warnings"></section>
+
+    <footer class="modal-footer">
+      <button class="btn" id="rerun-reset">Reset</button>
+      <button class="btn" id="rerun-save">Save this run</button>
+      <button class="btn" id="rerun-saved-list">Saved runs (<span id="saved-count">0</span>)</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ Saved runs modal ============ -->
+<div id="saved-modal" class="modal" aria-hidden="true">
+  <div class="modal-backdrop" data-close-saved></div>
+  <div class="modal-panel saved-panel">
+    <header class="modal-header">
+      <h2>Saved counterfactuals</h2>
+      <button class="btn-icon" data-close-saved aria-label="Close">✕</button>
+    </header>
+    <ul id="saved-list" class="saved-list"></ul>
+    <footer class="modal-footer">
+      <button class="btn btn-danger" id="saved-clear">Reset all saves</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ Vendor scripts ============ -->
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="vendor/chartjs/chart.umd.js"></script>
+<script src="vendor/chartjs/chartjs-plugin-annotation.min.js"></script>
+<script src="vendor/suncalc.js"></script>
+
+<!-- ============ App ============ -->
+<script type="module" src="app.js"></script>
+
+</body>
+</html>

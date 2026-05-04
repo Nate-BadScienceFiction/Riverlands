@@ -1,0 +1,17 @@
+# Claude Code per-repo local settings (personal; not shared)
+.claude/settings.local.json
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor noise
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Node (in case anyone adds tooling)
+node_modules/
+package-lock.json

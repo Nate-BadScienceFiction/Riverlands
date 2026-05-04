@@ -1,0 +1,10 @@
+{
+  "name": "riverlands-tribute-prototype",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Static client-side web app: trail-running races as data, analysis, and one playable subgame.",
+  "scripts": {
+    "test": "node tests/node-runner.mjs"
+  }
+}

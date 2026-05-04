@@ -1,0 +1,10 @@
+# Force Windows scripts to keep CRLF line endings.
+# cmd.exe parses .bat files erratically when they have LF-only endings —
+# we hit this with serve.bat and saw single characters being interpreted
+# as commands ("ho" not recognized, etc.).
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell scripts must keep LF — bash chokes on \r in shebang lines and
+# elsewhere, producing "command not found" or similar opaque errors.
+*.sh text eol=lf

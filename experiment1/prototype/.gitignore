@@ -1,0 +1,16 @@
+# Local screenshots from headless visual checks
+screenshots/
+
+# Diagnostic log produced by serve.bat on every run
+serve.log
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Node (in case anyone adds tooling later)
+node_modules/
+package-lock.json
