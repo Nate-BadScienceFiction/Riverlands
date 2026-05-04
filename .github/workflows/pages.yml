@@ -1,7 +1,6 @@
 # Deploy the prototype as a static site to GitHub Pages.
-# After first push, enable Pages in the repository settings:
-#   Settings → Pages → Build and deployment → Source: GitHub Actions
-# The published URL will be:
+# The configure-pages step below auto-enables Pages on first run, so
+# no Settings → Pages dance is needed. Published URL:
 #   https://nate-badsciencefiction.github.io/Riverlands/
 
 name: Deploy to GitHub Pages
@@ -33,6 +32,8 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload prototype as Pages artifact
         uses: actions/upload-pages-artifact@v3

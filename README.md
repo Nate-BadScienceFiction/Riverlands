@@ -58,7 +58,7 @@ Then open `http://localhost:8765/`.
 
 ## Live demo
 
-The prototype is also deployed to GitHub Pages. After enabling Pages in this repo's *Settings → Pages → Build and deployment → GitHub Actions*, the workflow at `.github/workflows/pages.yml` publishes `experiment1/prototype/` to:
+The prototype is also deployed to GitHub Pages — the workflow at `.github/workflows/pages.yml` publishes `experiment1/prototype/` (auto-enabling the Pages site on first run) to:
 
 ```
 https://nate-badsciencefiction.github.io/Riverlands/
