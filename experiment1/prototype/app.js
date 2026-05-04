@@ -8,6 +8,10 @@ import { detectInflections } from './lib/inflections.js';
 import { TOKEN_CATEGORIES, promptFor, iconFor, labelFor, cardKey } from './lib/postcard.js';
 import { QUESTIONS, groupedQuestions, getQuestion } from './lib/faq.js';
 
+// ─────────── Version ───────────
+
+const APP_VERSION = '0.10';
+
 // ─────────── Race catalog ───────────
 
 const KNOWN_RACES = [
@@ -103,6 +107,11 @@ function attachEvents() {
   document.querySelectorAll('[data-close-saved]').forEach(el => el.addEventListener('click', closeSavedList));
   document.getElementById('saved-clear').addEventListener('click', clearSavedRuns);
 
+  // About modal — every [data-version] element gets "v{APP_VERSION}" injected.
+  document.querySelectorAll('[data-version]').forEach(el => { el.textContent = `v${APP_VERSION}`; });
+  document.getElementById('about-btn').addEventListener('click', openAbout);
+  document.querySelectorAll('[data-close-about]').forEach(el => el.addEventListener('click', closeAbout));
+
   // Drag-drop and click-to-pick wiring. Skipped when the dropzone is
   // marked is-disabled in HTML — keeps the page from reacting to drops
   // when the UI is greyed out. Re-enable by removing the is-disabled
@@ -153,7 +162,7 @@ function attachEvents() {
 
   // Esc closes modals
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeReRun(); closeSavedList(); }
+    if (e.key === 'Escape') { closeReRun(); closeSavedList(); closeAbout(); }
   });
 
   // Drill-down tabs (replaces the previous accordion). Click a tab,
@@ -1211,6 +1220,15 @@ function openSavedList() {
 function closeSavedList() {
   document.getElementById('saved-modal').classList.remove('open');
   document.getElementById('saved-modal').setAttribute('aria-hidden', 'true');
+}
+
+function openAbout() {
+  document.getElementById('about-modal').classList.add('open');
+  document.getElementById('about-modal').setAttribute('aria-hidden', 'false');
+}
+function closeAbout() {
+  document.getElementById('about-modal').classList.remove('open');
+  document.getElementById('about-modal').setAttribute('aria-hidden', 'true');
 }
 
 function renderSavedList() {

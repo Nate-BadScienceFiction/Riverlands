@@ -1361,3 +1361,67 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   .rerun-results { grid-template-columns: 1fr; padding: 14px 18px; }
   .slider-row { grid-template-columns: 60px 1fr 90px; gap: 10px; }
 }
+
+/* ============ About / help button & modal ============ */
+
+.about-btn {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1100;            /* above modal backdrop (1000) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: inherit;
+  transition: background .12s ease, color .12s ease;
+}
+.about-btn:hover { background: var(--surface-2); color: var(--text); }
+
+.version-badge {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-3);
+  margin-left: 10px;
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+  background: var(--bg-2);
+  font-family: inherit;
+}
+/* Inside the picker hero, .hero h1 paints text via gradient + transparent fill;
+   re-set the fill so the badge stays legible instead of disappearing. */
+.hero h1 .version-badge {
+  -webkit-text-fill-color: var(--text-3);
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+}
+
+.about-body {
+  padding: 18px 22px 22px;
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 14.5px;
+}
+.about-body p { margin: 0; }
+.about-body code {
+  background: var(--bg-2);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.9em;
+  color: var(--text-2);
+}
+.about-body em { color: var(--text-2); font-style: italic; }

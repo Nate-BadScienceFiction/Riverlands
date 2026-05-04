@@ -9,6 +9,11 @@
 </head>
 <body>
 
+<!-- Help/about button — fixed top-right, visible on every screen. Opens
+     #about-modal. The "v0.10" badge text is populated from APP_VERSION
+     in app.js so there's a single source of truth for the version. -->
+<button id="about-btn" class="about-btn" type="button" aria-label="About this app">?</button>
+
 <!-- file:// detection. Inline non-module script so it runs even when ES
      module imports are blocked by CORS. Without this, opening index.html
      by double-click silently fails: the static page renders but no JS
@@ -37,7 +42,7 @@
 <!-- ============ SCREEN 1: File Picker ============ -->
 <section id="screen-picker" class="screen active">
   <header class="hero">
-    <h1>Riverlands Tribute</h1>
+    <h1>Riverlands Tribute <span class="version-badge" data-version></span></h1>
     <p class="tagline">Trail-running races as data, analysis, and small games.</p>
   </header>
 
@@ -248,6 +253,20 @@
     <footer class="modal-footer">
       <button class="btn btn-danger" id="saved-clear">Reset all saves</button>
     </footer>
+  </div>
+</div>
+
+<!-- ============ About modal ============ -->
+<div id="about-modal" class="modal" aria-hidden="true">
+  <div class="modal-backdrop" data-close-about></div>
+  <div class="modal-panel about-panel">
+    <header class="modal-header">
+      <h2>Riverlands Tribute <span class="version-badge" data-version></span></h2>
+      <button class="btn-icon" data-close-about aria-label="Close">✕</button>
+    </header>
+    <div class="about-body">
+      <p>GitHub Pages isn't running an application server — it's a static file host backed by a CDN. On every push to <code>main</code>, an Actions workflow bundles the <code>experiment1/prototype/</code> directory into a "Pages artifact" and hands it to GitHub's Pages deployment service, which unpacks it onto edge servers worldwide. When a visitor hits the URL, GitHub's CDN serves the raw files — <code>index.html</code>, <code>app.js</code>, <code>styles.css</code>, the vendored libraries (Leaflet, Chart.js, suncalc), the bundled <code>Riverlands.gpx</code>, and the ~174 pre-cached map tile PNGs — over HTTPS. The application itself runs <em>entirely in the visitor's browser</em>: it loads <code>index.html</code>, executes the JavaScript locally, and uses <code>fetch()</code> against the same Pages origin to pull the GPX and any additional tiles. GitHub never executes any of your code — it just serves bytes. The Python <code>server.py</code> and <code>serve.bat</code> exist only for <em>local</em> development; in production, GitHub's CDN plays the same role any plain static HTTP server would.</p>
+    </div>
   </div>
 </div>
 
